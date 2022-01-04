@@ -5,6 +5,7 @@ using namespace std;
 extern "C" {
     #include"libavformat/avformat.h"
     #include "libavutil/avutil.h"
+    #include "libavcodec/avcodec.h"
 }
 
 static double r2d(AVRational r)
@@ -66,7 +67,32 @@ bool Demux::Open(const char* url){
         cout << "frame_size = " << as->codecpar->frame_size << endl;
         //1024 * 2 * 2 = 4096  fps = sample_rate/frame_size
         mux.unlock();
-
-
         return true;
+}
+
+AVPacket* Demux::Read()
+{
+    mux.lock();
+    if (!formatContext)
+    {
+        mux.unlock();
+        return 0;
+    }
+    AVPacket *pkt = av_packet_alloc();
+
+    int re = av_read_frame(formatContext, pkt);
+    if (re != 0)
+    {
+        mux.unlock();
+        av_packet_free(&pkt);
+        return 0;
+    }
+
+    // trasnlate the time to ms
+    pkt->pts = pkt->pts*(1000 * (r2d(formatContext->streams[pkt->stream_index]->time_base)));
+    pkt->dts = pkt->dts*(1000 * (r2d(formatContext->streams[pkt->stream_index]->time_base)));
+    mux.unlock();
+    cout << pkt->pts << " "<<flush;
+    return pkt;
+
 }

@@ -3,6 +3,7 @@
 
 #include <mutex>
 struct AVFormatContext;
+struct AVPacket;
 
 class Demux
 {
@@ -11,6 +12,9 @@ public:
     ~Demux();
 
     virtual bool Open(const char *url);
+
+    //Caller should relase the memmory
+    virtual AVPacket *Read();
 
     int totalMs = 0;
 protected:

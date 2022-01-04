@@ -31,6 +31,13 @@ void MainWindow::open()
     const QString fn = fileDialog.selectedFiles().constFirst();
     demux->Open(fn.toLocal8Bit().data());
 
+    for (;;)
+        {
+            AVPacket *pkt = demux->Read();
+            if (!pkt)break;
+        }
+
+
 }
 
 #ifndef QT_NO_CONTEXTMENU
