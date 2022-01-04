@@ -12,11 +12,13 @@ INCLUDEPATH += -I /usr/local/Cellar/ffmpeg/4.4_2/include
 LIBS += -L/usr/local/Cellar/ffmpeg/4.4_2/lib -lavutil -lavcodec -lavformat -lswscale
 
 SOURCES += \
+    decoder.cpp \
     demux.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    decoder.h \
     demux.h \
     mainwindow.h
 

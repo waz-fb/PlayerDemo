@@ -12,16 +12,16 @@ public:
     Demux();
     ~Demux();
 
-    virtual bool Open(const char *url);
+    virtual bool Open(const char* url);
 
     //Caller should relase the memmory
-    virtual AVPacket *Read();
+    virtual AVPacket* Read();
 
     //get video codec parameters, should be free by avcodec_parameters_free
-    virtual AVCodecParameters *getVideoParameter();
+    virtual AVCodecParameters* getVideoParameter();
 
     //get video codec parameters, should be free by avcodec_parameters_free
-    virtual AVCodecParameters *CopyAPara();
+    virtual AVCodecParameters* getAudioParameter();
 
 
     virtual bool Seek(double pos);
@@ -33,7 +33,7 @@ public:
     int totalMs = 0;
 protected:
     std::mutex mux;
-    AVFormatContext *formatContext = NULL;
+    AVFormatContext* formatContext = NULL;
     int videoStream = 0;
     int audioStream = 1;
 };

@@ -102,12 +102,30 @@ AVPacket* Demux::Read()
 // TODO: implement details with decoder
 //get video codec parameters, should be free by avcodec_parameters_free
 AVCodecParameters* Demux::getVideoParameter() {
-    return nullptr;
+    mux.lock();
+    if (!formatContext)
+    {
+            mux.unlock();
+            return NULL;
+    }
+    AVCodecParameters *parameters = avcodec_parameters_alloc();
+    avcodec_parameters_copy(parameters, formatContext->streams[videoStream]->codecpar);
+    mux.unlock();
+    return parameters;
 }
 
 //get video codec parameters, should be free by avcodec_parameters_free
-AVCodecParameters* Demux::CopyAPara() {
-    return nullptr;
+AVCodecParameters* Demux::getAudioParameter() {
+    mux.lock();
+    if (!formatContext)
+    {
+        mux.unlock();
+        return NULL;
+     }
+     AVCodecParameters *parameters = avcodec_parameters_alloc();
+     avcodec_parameters_copy(parameters, formatContext->streams[audioStream]->codecpar);
+     mux.unlock();
+     return parameters;
 }
 
 

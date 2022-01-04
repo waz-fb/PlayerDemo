@@ -1,9 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QMenuBar"
+#include "decoder.h"
 
 #include <QContextMenuEvent>
 #include <QFileDialog>
+
+
+#include <iostream>
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,6 +35,13 @@ void MainWindow::open()
         return;
     const QString fn = fileDialog.selectedFiles().constFirst();
     demux->Open(fn.toLocal8Bit().data());
+    Decoder vdecoder;
+    cout << "vdecoder.Open() = " << vdecoder.Open(demux->getVideoParameter()) << endl;
+    vdecoder.Clear();
+    vdecoder.Close();
+    Decoder adecoder;
+    cout << "adecode.Open() = " << adecoder.Open(demux->getAudioParameter()) << endl;
+
 
     for (;;)
         {
