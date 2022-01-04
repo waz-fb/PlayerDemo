@@ -19,7 +19,8 @@ Demux::Demux()
 }
 
 Demux::~Demux() {
-
+    Close();
+    cout<<"closed"<<endl;
 }
 
 bool Demux::Open(const char* url){
@@ -95,4 +96,47 @@ AVPacket* Demux::Read()
     cout << pkt->pts << " "<<flush;
     return pkt;
 
+}
+
+
+// TODO: implement details with decoder
+//get video codec parameters, should be free by avcodec_parameters_free
+AVCodecParameters* Demux::getVideoParameter() {
+    return nullptr;
+}
+
+//get video codec parameters, should be free by avcodec_parameters_free
+AVCodecParameters* Demux::CopyAPara() {
+    return nullptr;
+}
+
+
+bool Demux::Seek(double pos){
+    return false;
+}
+
+//flush cache
+void Demux::Clear(){
+    mux.lock();
+        if (!formatContext)
+        {
+            mux.unlock();
+            return ;
+        }
+        avformat_flush(formatContext);
+        mux.unlock();
+
+}
+
+void Demux::Close(){
+    mux.lock();
+        if (!formatContext)
+        {
+            mux.unlock();
+            return;
+        }
+        avformat_close_input(&formatContext);
+
+        totalMs = 0;
+        mux.unlock();
 }
