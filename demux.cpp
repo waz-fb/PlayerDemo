@@ -49,6 +49,10 @@ bool Demux::Open(const char* url){
         cout << "\n=======================================================" << endl;
         videoStream = av_find_best_stream(formatContext, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
         AVStream *as = formatContext->streams[videoStream];
+        width = as->codecpar->width;
+        height = as->codecpar->height;
+
+
         cout << videoStream << " video info" << endl;
         cout << "codec_id = " << as->codecpar->codec_id << endl;
         cout << "format = " << as->codecpar->format << endl;
@@ -157,4 +161,13 @@ void Demux::Close(){
 
         totalMs = 0;
         mux.unlock();
+}
+
+bool Demux::IsAudio(AVPacket *pkt)
+{
+    if (!pkt) return false;
+    if (pkt->stream_index == videoStream)
+        return false;
+    return true;
+
 }

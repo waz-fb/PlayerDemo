@@ -5,6 +5,7 @@
 
 #include "demux.h"
 
+class TestThread;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,7 +38,7 @@ private:
 //! [3]
     QAction *openAct;
     Ui::MainWindow *ui;
-    Demux* demux;
+    TestThread* testThread;
 
 };
 #endif // MAINWINDOW_H

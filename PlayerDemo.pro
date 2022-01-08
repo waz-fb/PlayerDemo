@@ -1,4 +1,5 @@
-QT       += core gui
+QT       += core gui opengl
+QT += openglwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,12 +16,14 @@ SOURCES += \
     decoder.cpp \
     demux.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    videowidget.cpp
 
 HEADERS += \
     decoder.h \
     demux.h \
-    mainwindow.h
+    mainwindow.h \
+    videowidget.h
 
 FORMS += \
     mainwindow.ui

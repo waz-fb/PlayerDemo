@@ -30,7 +30,11 @@ public:
     virtual void Clear();
     virtual void Close();
 
+    virtual bool IsAudio(AVPacket *pkt);
+
     int totalMs = 0;
+    int width = 0;
+    int height = 0;
 protected:
     std::mutex mux;
     AVFormatContext* formatContext = NULL;

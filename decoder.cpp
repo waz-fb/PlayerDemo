@@ -21,6 +21,12 @@ bool Decoder::Open(AVCodecParameters *parameter){
     if (!parameter) return false;
         Close();
 
+        AVDictionary *opts = NULL;
+
+        //
+        av_dict_set(&opts, "rtsp_transport", "tcp", 0);
+        av_dict_set(&opts, "max_delay", "500", 0);
+
         AVCodec *vcodec = avcodec_find_decoder(parameter->codec_id);
         if (!vcodec)
         {
@@ -51,7 +57,7 @@ bool Decoder::Open(AVCodecParameters *parameter){
         }
         mux.unlock();
         cout << " avcodec_open2 success!" << endl;
-        return true;
+        return !!codec;
 }
 
 void Decoder::Close() {
@@ -71,4 +77,41 @@ void Decoder::Clear() {
         avcodec_flush_buffers(codec);
 
     mux.unlock();
+}
+
+bool Decoder::Send(AVPacket *pkt)
+{
+    //package cannot be empty
+    if (!pkt || pkt->size <= 0 || !pkt->data) return false;
+    mux.lock();
+    if (!codec)
+    {
+        mux.unlock();
+        return false;
+    }
+    int re = avcodec_send_packet(codec, pkt);
+    mux.unlock();
+    av_packet_free(&pkt);
+    if (re != 0)return false;
+    return true;
+}
+
+AVFrame* Decoder::Recv()
+{
+    mux.lock();
+    if (!codec)
+    {
+        mux.unlock();
+        return NULL;
+    }
+    AVFrame *frame = av_frame_alloc();
+    int re = avcodec_receive_frame(codec, frame);
+    mux.unlock();
+    if (re != 0)
+    {
+        av_frame_free(&frame);
+        return NULL;
+    }
+    cout << "["<<frame->linesize[0] << "] " << flush;
+    return frame;
 }
