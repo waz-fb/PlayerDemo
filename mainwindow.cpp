@@ -2,10 +2,11 @@
 #include "ui_mainwindow.h"
 #include "QMenuBar"
 #include "decoder.h"
+#include "resampler.h"
 
 #include <QContextMenuEvent>
 #include <QFileDialog>
-
+#include <QThread>
 
 #include <iostream>
 using namespace std;
@@ -24,17 +25,20 @@ public:
         cout << "vdecode.Open() = " << vdecode.Open(demux->getVideoParameter()) << endl;
         cout << "adecode.Open() = " << adecode.Open(demux->getAudioParameter()) << endl;
 
+        cout << "resample.Open = " << resample.Open(demux->getAudioParameter()) << endl;
+
     }
     void run()
     {
         for (;;)
         {
             AVPacket *pkt = demux->Read();
+            unsigned char *pcm = new unsigned char[1024 * 1024];
             if (demux->IsAudio(pkt))
             {
-                //adecode.Send(pkt);
-                //AVFrame *frame = adecode.Recv();
-                //cout << "Audio:" << frame << endl;
+                adecode.Send(pkt);
+                AVFrame *frame = adecode.Recv();
+                cout<<"Resample:"<<resample.Resample(frame, pcm)<<" ";
             }
             else
             {
@@ -51,6 +55,7 @@ public:
     Decoder vdecode;
     Decoder adecode;
     VideoWidget *video;
+    Resampler resample;
 
 };
 

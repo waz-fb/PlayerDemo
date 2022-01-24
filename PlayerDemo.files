@@ -1,0 +1,13 @@
+PlayerDemo.cflags
+PlayerDemo.cxxflags
+PlayerDemo.pro
+decoder.cpp
+decoder.h
+demux.cpp
+demux.h
+main.cpp
+mainwindow.cpp
+mainwindow.h
+mainwindow.ui
+videowidget.cpp
+videowidget.h
