@@ -112,6 +112,6 @@ AVFrame* Decoder::Recv()
         av_frame_free(&frame);
         return NULL;
     }
-    cout << "["<<frame->linesize[0] << "] " << flush;
+    //cout << "["<<frame->linesize[0] << "] " << flush;
     return frame;
 }

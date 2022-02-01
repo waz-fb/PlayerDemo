@@ -52,7 +52,6 @@ bool Demux::Open(const char* url){
         width = as->codecpar->width;
         height = as->codecpar->height;
 
-
         cout << videoStream << " video info" << endl;
         cout << "codec_id = " << as->codecpar->codec_id << endl;
         cout << "format = " << as->codecpar->format << endl;
@@ -70,6 +69,9 @@ bool Demux::Open(const char* url){
         //AVSampleFormat;
         cout << "channels = " << as->codecpar->channels << endl;
         cout << "frame_size = " << as->codecpar->frame_size << endl;
+
+        sampleRate = as->codecpar->sample_rate;
+        channels = as->codecpar->channels;
         //1024 * 2 * 2 = 4096  fps = sample_rate/frame_size
         mux.unlock();
         return true;
@@ -97,7 +99,7 @@ AVPacket* Demux::Read()
     pkt->pts = pkt->pts*(1000 * (r2d(formatContext->streams[pkt->stream_index]->time_base)));
     pkt->dts = pkt->dts*(1000 * (r2d(formatContext->streams[pkt->stream_index]->time_base)));
     mux.unlock();
-    cout << pkt->pts << " "<<flush;
+    //cout << pkt->pts << " "<<flush;
     return pkt;
 
 }

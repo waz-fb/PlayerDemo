@@ -167,7 +167,7 @@ void VideoWidget::initializeGL()
 
 void VideoWidget::paintGL()
 {
-   qDebug() << "paintGL";
+   //qDebug() << "paintGL";
     mux.lock();
 
     glActiveTexture(GL_TEXTURE0);

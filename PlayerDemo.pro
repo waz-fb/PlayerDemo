@@ -1,5 +1,5 @@
 QT += core gui opengl
-QT += openglwidgets
+QT += openglwidgets multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +13,7 @@ INCLUDEPATH += -I /usr/local/Cellar/ffmpeg/4.4.1_5/include
 LIBS += -L/usr/local/Cellar/ffmpeg/4.4.1_5/lib -lavutil -lavcodec -lavformat -lswscale -lswresample
 
 SOURCES += \
+    audioplayer.cpp \
     decoder.cpp \
     demux.cpp \
     main.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
     videowidget.cpp
 
 HEADERS += \
+    audioplayer.h \
     decoder.h \
     demux.h \
     mainwindow.h \

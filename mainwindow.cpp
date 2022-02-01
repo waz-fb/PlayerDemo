@@ -3,11 +3,11 @@
 #include "QMenuBar"
 #include "decoder.h"
 #include "resampler.h"
+#include "audioplayer.h"
 
 #include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QThread>
-
 #include <iostream>
 using namespace std;
 
@@ -26,27 +26,42 @@ public:
         cout << "adecode.Open() = " << adecode.Open(demux->getAudioParameter()) << endl;
 
         cout << "resample.Open = " << resample.Open(demux->getAudioParameter()) << endl;
+        AudioPlayer::Get()->channels = demux->channels;
+        AudioPlayer::Get()->sampleRate = demux->sampleRate;
 
+       cout << "AudioPlayer::Get()->Open() = " << AudioPlayer::Get()->Open()<<endl;
     }
     void run()
     {
         for (;;)
         {
             AVPacket *pkt = demux->Read();
-            unsigned char *pcm = new unsigned char[1024 * 1024];
+
             if (demux->IsAudio(pkt))
             {
+                unsigned char *pcm = new unsigned char[1024 * 1024];
                 adecode.Send(pkt);
                 AVFrame *frame = adecode.Recv();
-                cout<<"Resample:"<<resample.Resample(frame, pcm)<<" ";
+                int len = resample.Resample(frame, pcm);
+                //cout<<"Resample:"<<len<<endl;
+                while (len > 0)
+                {
+                    if (AudioPlayer::Get()->isWritable(len))
+                    {
+                        AudioPlayer::Get()->Write(pcm, len);
+                        break;
+                    }
+                    msleep(1);
+                }
+                delete[] pcm;
             }
             else
             {
                 vdecode.Send(pkt);
                 AVFrame *frame = vdecode.Recv();
                 video->Repaint(frame);
-                msleep(40);
-                cout << "Video:" << frame << endl;
+                //msleep(40);
+               // cout << "Video:" << frame << endl;
             }
             if (!pkt)break;
         }
