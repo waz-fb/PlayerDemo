@@ -4,6 +4,8 @@
 #include "decoder.h"
 #include "resampler.h"
 #include "audioplayer.h"
+#include "audiothread.h"
+#include "videothread.h"
 
 #include <QContextMenuEvent>
 #include <QFileDialog>
@@ -14,6 +16,9 @@ using namespace std;
 
 class TestThread :public QThread
 {
+private:
+    AudioThread at;
+    VideoThread vt;
 public:
     void Init(const char* url)
     {
@@ -23,13 +28,18 @@ public:
         cout << "CopyAPara = " << demux->getAudioParameter() << endl;
 
         cout << "vdecode.Open() = " << vdecode.Open(demux->getVideoParameter()) << endl;
-        cout << "adecode.Open() = " << adecode.Open(demux->getAudioParameter()) << endl;
+//        cout << "adecode.Open() = " << adecode.Open(demux->getAudioParameter()) << endl;
 
-        cout << "resample.Open = " << resample.Open(demux->getAudioParameter()) << endl;
-        AudioPlayer::Get()->channels = demux->channels;
-        AudioPlayer::Get()->sampleRate = demux->sampleRate;
+//        cout << "resample.Open = " << resample.Open(demux->getAudioParameter()) << endl;
+//        AudioPlayer::Get()->channels = demux->channels;
+//        AudioPlayer::Get()->sampleRate = demux->sampleRate;
 
-       cout << "AudioPlayer::Get()->Open() = " << AudioPlayer::Get()->Open()<<endl;
+//       cout << "AudioPlayer::Get()->Open() = " << AudioPlayer::Get()->Open()<<endl;
+
+        at.Open(demux->getAudioParameter(), demux->sampleRate, demux->channels);
+        vt.Open(demux->getVideoParameter(), video, demux->width, demux->height);
+        at.start();
+        vt.start();
     }
     void run()
     {
@@ -39,27 +49,29 @@ public:
 
             if (demux->IsAudio(pkt))
             {
-                unsigned char *pcm = new unsigned char[1024 * 1024];
-                adecode.Send(pkt);
-                AVFrame *frame = adecode.Recv();
-                int len = resample.Resample(frame, pcm);
-                //cout<<"Resample:"<<len<<endl;
-                while (len > 0)
-                {
-                    if (AudioPlayer::Get()->isWritable(len))
-                    {
-                        AudioPlayer::Get()->Write(pcm, len);
-                        break;
-                    }
-                    msleep(1);
-                }
-                delete[] pcm;
+                at.Push(pkt);
+//                unsigned char *pcm = new unsigned char[1024 * 1024];
+//                adecode.Send(pkt);
+//                AVFrame *frame = adecode.Recv();
+//                int len = resample.Resample(frame, pcm);
+//                //cout<<"Resample:"<<len<<endl;
+//                while (len > 0)
+//                {
+//                    if (AudioPlayer::Get()->isWritable(len))
+//                    {
+//                        AudioPlayer::Get()->Write(pcm, len);
+//                        break;
+//                    }
+//                    msleep(1);
+//                }
+//                delete[] pcm;
             }
             else
             {
-                vdecode.Send(pkt);
-                AVFrame *frame = vdecode.Recv();
-                video->Repaint(frame);
+                vt.Push(pkt);
+//                vdecode.Send(pkt);
+//                AVFrame *frame = vdecode.Recv();
+//                video->Repaint(frame);
                 //msleep(40);
                // cout << "Video:" << frame << endl;
             }
@@ -102,10 +114,9 @@ void MainWindow::open()
     // Live Stream source
     //rtmp://cbs-live.gscdn.com/cbs-live/cbs-live.stream'
 
-
-    testThread->Init(fn.toLocal8Bit().data());
-    ui->videoWidget->Init(testThread->demux->width, testThread->demux->height);
     testThread->video =  ui->videoWidget;
+    testThread->Init(fn.toLocal8Bit().data());
+//    ui->videoWidget->Init(testThread->demux->width, testThread->demux->height);
     testThread->start();
     cout<<"finished"<<endl;
 

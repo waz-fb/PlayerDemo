@@ -10,8 +10,6 @@ struct AVPacket;
 class Decoder
 {
 public:
-    Decoder();
-    ~Decoder();
 
     virtual bool Open(AVCodecParameters *parameter);
 

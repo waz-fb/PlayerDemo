@@ -7,16 +7,6 @@ extern "C"
 
 using namespace std;
 
-Decoder::Decoder()
-{
-
-}
-
-
-Decoder::~Decoder(){
-
-}
-
 bool Decoder::Open(AVCodecParameters *parameter){
     if (!parameter) return false;
         Close();
@@ -27,7 +17,7 @@ bool Decoder::Open(AVCodecParameters *parameter){
         av_dict_set(&opts, "rtsp_transport", "tcp", 0);
         av_dict_set(&opts, "max_delay", "500", 0);
 
-        AVCodec *vcodec = avcodec_find_decoder(parameter->codec_id);
+        const AVCodec *vcodec = avcodec_find_decoder(parameter->codec_id);
         if (!vcodec)
         {
             avcodec_parameters_free(&parameter);
@@ -112,6 +102,5 @@ AVFrame* Decoder::Recv()
         av_frame_free(&frame);
         return NULL;
     }
-    //cout << "["<<frame->linesize[0] << "] " << flush;
     return frame;
 }

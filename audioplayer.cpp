@@ -3,10 +3,10 @@
 #include <QtMultimedia>
 #include <QAudioFormat>
 #include <QAudioSink>
-#include <QMediaPlayer>
 #include <QAudioDevice>
 #include <mutex>
 #include <QDebug>
+
 class QtAudioPlayer :public AudioPlayer
 {
 public:
@@ -44,7 +44,7 @@ public:
     }
     virtual bool Write(const unsigned char *data, int len)
         {
-            if (!data || len <= 0)return false;
+            if (!data || len <= 0) return false;
             mux.lock();
             if (!audio || !io)
             {
@@ -71,7 +71,6 @@ public:
             return free > size;
         }
 private:
-    QMediaPlayer * player;
     QAudioSink *audio = NULL;
     QIODevice *io = NULL;
     std::mutex mux;
