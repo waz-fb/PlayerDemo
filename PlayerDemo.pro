@@ -17,6 +17,7 @@ SOURCES += \
     audiothread.cpp \
     decoder.cpp \
     demux.cpp \
+    demuxthread.cpp \
     main.cpp \
     mainwindow.cpp \
     resampler.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     audiothread.h \
     decoder.h \
     demux.h \
+    demuxthread.h \
     ivideocall.h \
     mainwindow.h \
     resampler.h \

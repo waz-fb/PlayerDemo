@@ -12,8 +12,6 @@ bool Decoder::Open(AVCodecParameters *parameter){
         Close();
 
         AVDictionary *opts = NULL;
-
-        //
         av_dict_set(&opts, "rtsp_transport", "tcp", 0);
         av_dict_set(&opts, "max_delay", "500", 0);
 

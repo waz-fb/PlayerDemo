@@ -48,6 +48,7 @@ void VideoThread::Push(AVPacket *pkt)
 
 void VideoThread::run()
 {
+    cout << "video" << endl;
     while (!isExit)
     {
         mux.lock();
@@ -72,8 +73,10 @@ void VideoThread::run()
         {
             AVFrame * frame = decoder->Recv();
             if (!frame) break;
+            cout <<" Frame not null \n";
             if (call)
             {
+                cout << "call not call\n";
                 call->Repaint(frame);
             }
 

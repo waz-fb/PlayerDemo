@@ -4,9 +4,7 @@
 #include <QMainWindow>
 
 #include "demux.h"
-
-class TestThread;
-
+class DemuxThread;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 class QAction;
@@ -38,7 +36,7 @@ private:
 //! [3]
     QAction *openAct;
     Ui::MainWindow *ui;
-    TestThread* testThread;
+    DemuxThread* dt;
 
 };
 #endif // MAINWINDOW_H

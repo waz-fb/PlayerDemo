@@ -51,14 +51,9 @@ const char *tString = STR(
 
 
 
-VideoWidget::VideoWidget(QWidget *parent):QOpenGLWidget(parent)
-{
+VideoWidget::VideoWidget(QWidget *parent):QOpenGLWidget(parent){}
 
-}
-
-VideoWidget::~VideoWidget(){
-
-}
+VideoWidget::~VideoWidget(){}
 
 void VideoWidget::Init(int width, int height) {
     mux.lock();
@@ -105,6 +100,7 @@ void VideoWidget::Init(int width, int height) {
 
 void VideoWidget::Repaint(AVFrame *frame)
 {
+    qDebug() << "Repaint";
     if (!frame)return;
     mux.lock();
     if (!datas[0] || width*height == 0 || frame->width != this->width || frame->height != this->height)

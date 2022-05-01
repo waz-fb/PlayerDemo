@@ -17,9 +17,9 @@ public:
     virtual void Push(AVPacket *pkt);
     void run();
     virtual ~VideoThread();
-
+    VideoThread():isExit(false){}
     u_int32_t maxList = 100;
-    bool isExit = false;
+    bool isExit;
 protected:
     std::list <AVPacket *> packs;
     std::mutex mux;

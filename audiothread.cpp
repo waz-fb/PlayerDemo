@@ -100,7 +100,6 @@ void AudioThread::run() {
                 }
                 msleep(1);
                 continue;
-
             }
         }
         mux.unlock();

@@ -6,6 +6,7 @@
 #include "audioplayer.h"
 #include "audiothread.h"
 #include "videothread.h"
+#include "demuxthread.h"
 
 #include <QContextMenuEvent>
 #include <QFileDialog>
@@ -92,7 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     createActions();
-    testThread = new TestThread();
     ui->setupUi(this);
 }
 
@@ -114,10 +114,14 @@ void MainWindow::open()
     // Live Stream source
     //rtmp://cbs-live.gscdn.com/cbs-live/cbs-live.stream'
 
-    testThread->video =  ui->videoWidget;
-    testThread->Init(fn.toLocal8Bit().data());
-//    ui->videoWidget->Init(testThread->demux->width, testThread->demux->height);
-    testThread->start();
+//    testThread->video =  ui->videoWidget;
+//    testThread->Init(fn.toLocal8Bit().data());
+////    ui->videoWidget->Init(testThread->demux->width, testThread->demux->height);
+//    testThread->start();
+    //
+    dt = new DemuxThread();
+    dt->Open(fn.toLocal8Bit().data(), ui->videoWidget);
+    dt->Start();
     cout<<"finished"<<endl;
 
 }
